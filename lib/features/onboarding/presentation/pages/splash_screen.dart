@@ -1,9 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:wealth_wave/config/routes/route_names.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _navigateToNextScreen();
+  }
+
+  void _navigateToNextScreen() {
+    // 1. Set a delay (e.g., 3 seconds)
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        context.goNamed(RouteNames.onboarding);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +42,7 @@ class SplashScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // App icon / logo (optional, adds to the finance app identity)
+              // App icon / logo
               Icon(
                 Icons.trending_up_rounded,
                 size: 80,

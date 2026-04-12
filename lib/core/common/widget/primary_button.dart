@@ -1,0 +1,30 @@
+import 'package:flutter/material.dart';
+import 'package:wealth_wave/core/util/constants/app_colors.dart';
+import 'package:wealth_wave/core/util/constants/app_text_style.dart';
+
+Widget primaryButton(
+  String buttonContentText,
+  VoidCallback? onClick,
+  Color backgroundColor,
+  Color foregroundColor,
+) {
+  return SizedBox(
+    width: double.infinity,
+    child: ElevatedButton(
+      onPressed: () {
+        if (onClick != null) {
+          onClick();
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: onClick != null
+            ? backgroundColor
+            : AppColors.shadow, // disabled state color
+        foregroundColor: foregroundColor,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      ),
+      child: Text(buttonContentText, style: AppTextStyle.buttonPrimary),
+    ),
+  );
+}

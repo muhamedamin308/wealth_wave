@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 import 'package:wealth_wave/core/util/constants/app_text_style.dart';
+import 'package:wealth_wave/core/common/widget/primary_button.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -25,7 +26,7 @@ class OnboardingScreen extends StatelessWidget {
             child: Container(
               color: AppColors.scaffoldBackground,
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: const _BottomContent(),
+              child: _BottomContent(),
             ),
           ),
         ],
@@ -46,7 +47,12 @@ class _BottomContent extends StatelessWidget {
         const Spacer(flex: 2),
         _buildMainTitle(),
         const Spacer(flex: 1),
-        _buildGetStartedButton(),
+        primaryButton(
+          'Get Started',
+          () {},
+          AppColors.vibrantTeal,
+          AppColors.textPrimary,
+        ),
         const SizedBox(height: 24),
         _buildSignInLink(),
         const Spacer(flex: 2),
@@ -60,26 +66,6 @@ class _BottomContent extends StatelessWidget {
       style: AppTextStyle.balance,
       textAlign: TextAlign.center,
       softWrap: true,
-    );
-  }
-
-  Widget _buildGetStartedButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          // TODO: Navigate to login/signup
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.vibrantTeal,
-          foregroundColor: AppColors.textPrimary,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-        child: Text('Get Started', style: AppTextStyle.buttonPrimary),
-      ),
     );
   }
 
