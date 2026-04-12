@@ -45,7 +45,7 @@ class _BottomContent extends StatelessWidget {
       children: [
         const Spacer(flex: 2),
         _buildMainTitle(),
-        const Spacer(flex: 2),
+        const Spacer(flex: 1),
         _buildGetStartedButton(),
         const SizedBox(height: 24),
         _buildSignInLink(),
