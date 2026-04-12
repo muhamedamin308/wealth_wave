@@ -5,41 +5,135 @@
 *.swp
 .DS_Store
 .atom/
-.build/
 .buildlog/
 .history
 .svn/
-.swiftpm/
-migrate_working_dir/
+.metadata
+*.orig
+*.tmp
+*.pid
+*.lock
+*.bk
+*.old
+*.swo
+*.swp
 
-# IntelliJ related
+# IntelliJ / Android Studio / IDE related
 *.iml
 *.ipr
 *.iws
 .idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+.vscode/
+*.code-workspace
+*.code-profile
 
 # Flutter/Dart/Pub related
 **/doc/api/
-**/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
 /build/
-/coverage/
+/ios/Flutter/App.framework
+/ios/Flutter/Flutter.framework
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/flutter_export_environment.sh
+/ios/Flutter/flutter_assets/
+/ios/ServiceDefinitions.json
+/ios/Runner/GeneratedPluginRegistrant.*
+/android/app/src/main/java/io/flutter/plugins/
+/android/app/src/main/java/io/flutter/embedding/
+/android/local.properties
+/android/gradle/wrapper/gradle-wrapper.properties
+/android/gradlew
+/android/gradlew.bat
+/android/.gradle/
+/android/build/
+/android/app/build/
+/android/captures/
 
-# Symbolication related
-app.*.symbols
+# iOS/macOS specific
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*~nib/
+**/ios/**/*.hmap
+**/ios/**/.lastbuildstate
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile.exp
+**/ios/**/xcuserdata/
+**/ios/**/.generated/
+**/ios/**/Flutter/Flutter.podspec
+**/ios/**/Flutter/Generated.xcconfig
+**/ios/**/Flutter/ephemeral/
+**/ios/**/ServiceDefinitions.json
+**/ios/**/Runner/GeneratedPluginRegistrant.*
+**/ios/**/.project
+**/ios/**/.idea
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Pods/
+**/macos/**/Flutter/GeneratedPluginRegistrant.swift
+**/macos/**/Flutter/ephemeral/
 
-# Obfuscation related
-app.*.map.json
+# Web specific
+**/web/icons/
+**/web/favicon.png
+**/web/manifest.json
+**/web/index.html
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Firebase / Google Services
+**/android/app/google-services.json
+**/ios/Runner/GoogleService-Info.plist
+**/macos/Runner/GoogleService-Info.plist
+
+# Environment & secrets
+.env
+*.env.local
+*.env.*.local
+*.key
+*.p8
+*.p12
+*.mobileprovision
+*.provisionprofile
+secrets.json
+secrets.yaml
+
+# Coverage & testing
+**/coverage/
+**.test_coverage.json
+**/test/.test_coverage/
+**/.test_coverage/
+*.lcov
+
+# Package versioning (optional, if using versioning in pubspec)
+**/pubspec.lock
+**/pubspec_overrides.yaml
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+*.swp
+*.swo
+*~
+*.bak
+*.old
+
+# Dependency directories (if using local packages)
+**/node_modules/
+**/bower_components/
+
+# Logs
+**/logs/
+*.log
+
+# Temp files
+**/tmp/
+**/temp/
+*.tmp
+*.temp
