@@ -1,4 +1,9 @@
+import 'dart:math';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:wealth_wave/config/routes/route_names.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 import 'package:wealth_wave/core/util/constants/app_text_style.dart';
 import 'package:wealth_wave/core/common/widget/primary_button.dart';
@@ -49,12 +54,14 @@ class _BottomContent extends StatelessWidget {
         const Spacer(flex: 1),
         primaryButton(
           'Get Started',
-          () {},
+          () {
+            context.pushNamed(RouteNames.signup);
+          },
           AppColors.vibrantTeal,
           AppColors.textPrimary,
         ),
         const SizedBox(height: 24),
-        _buildSignInLink(),
+        _buildSignInLink(context),
         const Spacer(flex: 2),
       ],
     );
@@ -69,20 +76,22 @@ class _BottomContent extends StatelessWidget {
     );
   }
 
-  Widget _buildSignInLink() {
+  Widget _buildSignInLink(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // TODO: Navigate to sign in
-      },
       child: RichText(
         text: TextSpan(
           text: 'Already Have Account? ',
-          style: AppTextStyle.bodySmall,
+          style: AppTextStyle.bodySmall.copyWith(fontWeight: FontWeight.bold),
           children: [
             TextSpan(
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  context.pushNamed(RouteNames.login);
+                },
               text: 'Sign In',
               style: AppTextStyle.buttonSecondary.copyWith(
                 fontWeight: FontWeight.w700,
+                decoration: TextDecoration.underline,
               ),
             ),
           ],

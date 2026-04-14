@@ -6,8 +6,9 @@ Widget primaryButton(
   String buttonContentText,
   VoidCallback? onClick,
   Color backgroundColor,
-  Color foregroundColor,
-) {
+  Color foregroundColor, {
+  double radius = 8.0,
+}) {
   return SizedBox(
     width: double.infinity,
     child: ElevatedButton(
@@ -21,10 +22,15 @@ Widget primaryButton(
             ? backgroundColor
             : AppColors.shadow, // disabled state color
         foregroundColor: foregroundColor,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius),
+        ),
       ),
-      child: Text(buttonContentText, style: AppTextStyle.buttonPrimary),
+      child: Text(
+        buttonContentText,
+        style: AppTextStyle.buttonPrimary.copyWith(color: foregroundColor),
+      ),
     ),
   );
 }
