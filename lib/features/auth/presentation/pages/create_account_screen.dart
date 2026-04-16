@@ -2,10 +2,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wealth_wave/config/routes/route_names.dart';
+import 'package:wealth_wave/core/common/functions/custom_modal_bottom_sheet.dart';
+import 'package:wealth_wave/core/common/widget/custom_circular_progress_indicator.dart';
 import 'package:wealth_wave/core/common/widget/primary_button.dart';
 import 'package:wealth_wave/core/common/widget/custom_text_field.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 import 'package:wealth_wave/core/util/constants/app_text_style.dart';
+import 'package:wealth_wave/features/auth/presentation/bloc/create_account_state.dart';
+import 'package:wealth_wave/features/auth/presentation/controller/create_account_controller.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -20,6 +24,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmPassCtrl = TextEditingController();
+  final _controller = AuthenticationController();
 
   static const _fieldPadding = EdgeInsets.symmetric(
     horizontal: 24,
@@ -35,9 +40,47 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      switch (_controller.state) {
+        case AuthenticationLoadingState():
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) =>
+                const Center(child: CustomCircularProgressIndicator()),
+          );
+          break;
+
+        case AuthenticationSuccessState():
+          Navigator.of(context).pop(); // Close loading dialog
+          CustomErrorBottomSheet.show(
+            context,
+            title: 'Account Creation Success',
+            message:
+                'Your account has been created successfully! You can now log in with your credentials.',
+            isError: false,
+          );
+          break;
+
+        case AuthenticationErrorState():
+          Navigator.of(context).pop(); // Close loading dialog
+          CustomErrorBottomSheet.show(
+            context,
+            title: 'Account Creation Failed',
+            message: (_controller.state as AuthenticationErrorState).message,
+            isError: true,
+          );
+          break;
+      }
+    });
+  }
+
   void _onCreateAccount() {
     if (_formKey.currentState?.validate() ?? false) {
-      print('Creating account for ${_nameCtrl.text}, ${_emailCtrl.text}');
+      _controller.doCreateAccount();
     }
   }
 
@@ -55,12 +98,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             const SizedBox(height: 36),
 
             Text(
-              'Spend Smarter\nSave More',
+              'Start Saving\nYour Money!',
               style: AppTextStyle.balance.copyWith(fontSize: 34),
               textAlign: TextAlign.center,
             ),
 
             Image.asset('assets/images/signup_image.png'),
+
+            SizedBox(height: 16),
 
             CustomTextField(
               controller: _nameCtrl,
@@ -71,8 +116,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.next,
               inputType: InputType.text,
-              validator: (v) =>
-                  (v?.trim().isEmpty ?? true) ? 'Name is required' : null,
+              validator: (v) {
+                if (v?.trim().isEmpty ?? true) return 'Name is required';
+                final valid = RegExp(
+                  r"(-?([A-Z].\s)?([A-Z][a-z]+)\s?)+([A-Z]'([A-Z][a-z]+))?",
+                );
+                return valid.hasMatch(v!) ? null : 'Enter a valid name';
+              },
             ),
 
             CustomTextField(
@@ -98,6 +148,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               keyboardType: TextInputType.visiblePassword,
               textInputAction: TextInputAction.next,
               inputType: InputType.password,
+              helperText:
+                  'Must have at least 8 characters, 1 capital letter and 1 number.',
               validator: (v) {
                 if (v == null || v.isEmpty) return 'Password is required';
                 if (v.length < 8) return 'At least 8 characters required';
@@ -106,6 +158,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 }
                 return null;
               },
+              helperTextCondition: (v) =>
+                  v.length < 8 || !RegExp(r'(?=.*[A-Z])(?=.*\d)').hasMatch(v),
             ),
 
             CustomTextField(
@@ -118,9 +172,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               inputType: InputType.password,
               validator: (v) =>
                   v != _passCtrl.text ? 'Passwords do not match' : null,
+              helperText: 'Passwords must match.',
+              helperTextCondition: (v) => v != _passCtrl.text,
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),

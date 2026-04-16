@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -59,6 +57,7 @@ class _BottomContent extends StatelessWidget {
           },
           AppColors.vibrantTeal,
           AppColors.textPrimary,
+          radius: 24.0,
         ),
         const SizedBox(height: 24),
         _buildSignInLink(context),

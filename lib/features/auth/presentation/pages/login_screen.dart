@@ -2,10 +2,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wealth_wave/config/routes/route_names.dart';
+import 'package:wealth_wave/core/common/functions/custom_modal_bottom_sheet.dart';
+import 'package:wealth_wave/core/common/widget/custom_circular_progress_indicator.dart';
 import 'package:wealth_wave/core/common/widget/primary_button.dart';
 import 'package:wealth_wave/core/common/widget/custom_text_field.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 import 'package:wealth_wave/core/util/constants/app_text_style.dart';
+import 'package:wealth_wave/features/auth/presentation/bloc/create_account_state.dart';
+import 'package:wealth_wave/features/auth/presentation/controller/create_account_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
+  final _controller = AuthenticationController();
 
   static const _fieldPadding = EdgeInsets.symmetric(
     horizontal: 24,
@@ -29,6 +34,44 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      switch (_controller.state) {
+        case AuthenticationLoadingState():
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) =>
+                const Center(child: CustomCircularProgressIndicator()),
+          );
+          break;
+
+        case AuthenticationSuccessState():
+          Navigator.of(context).pop(); // Close loading dialog
+          CustomErrorBottomSheet.show(
+            context,
+            title: 'Account Creation Success',
+            message:
+                'Your account has been created successfully! You can now log in with your credentials.',
+            isError: false,
+          );
+          break;
+
+        case AuthenticationErrorState():
+          Navigator.of(context).pop(); // Close loading dialog
+          CustomErrorBottomSheet.show(
+            context,
+            title: 'Account Creation Failed',
+            message: (_controller.state as AuthenticationErrorState).message,
+            isError: true,
+          );
+          break;
+      }
+    });
   }
 
   void _onLoginPressed() {
