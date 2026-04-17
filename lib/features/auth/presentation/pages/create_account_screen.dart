@@ -8,7 +8,6 @@ import 'package:wealth_wave/core/common/widget/primary_button.dart';
 import 'package:wealth_wave/core/common/widget/custom_text_field.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 import 'package:wealth_wave/core/util/constants/app_text_style.dart';
-import 'package:wealth_wave/core/util/mock/mock_auth_service.dart';
 import 'package:wealth_wave/di/locator.dart';
 import 'package:wealth_wave/features/auth/data/models/user_model.dart';
 import 'package:wealth_wave/features/auth/presentation/bloc/authentication_state.dart';
