@@ -2,14 +2,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wealth_wave/config/routes/route_names.dart';
-import 'package:wealth_wave/core/common/functions/custom_modal_bottom_sheet.dart';
+import 'package:wealth_wave/core/common/widget/custom_modal_bottom_sheet.dart';
 import 'package:wealth_wave/core/common/widget/custom_circular_progress_indicator.dart';
 import 'package:wealth_wave/core/common/widget/primary_button.dart';
 import 'package:wealth_wave/core/common/widget/custom_text_field.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 import 'package:wealth_wave/core/util/constants/app_text_style.dart';
-import 'package:wealth_wave/features/auth/presentation/bloc/create_account_state.dart';
-import 'package:wealth_wave/features/auth/presentation/controller/create_account_controller.dart';
+import 'package:wealth_wave/di/locator.dart';
+import 'package:wealth_wave/features/auth/presentation/bloc/authentication_state.dart';
+import 'package:wealth_wave/features/auth/presentation/controller/authentication_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,9 +21,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-  final _controller = AuthenticationController();
+  final _emailController = TextEditingController();
+  final _passController = TextEditingController();
+  final _controller = locator.get<AuthenticationController>();
 
   static const _fieldPadding = EdgeInsets.symmetric(
     horizontal: 24,
@@ -31,8 +32,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _emailCtrl.dispose();
-    _passCtrl.dispose();
+    _emailController.dispose();
+    _passController.dispose();
     super.dispose();
   }
 
@@ -76,7 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onLoginPressed() {
     if (_formKey.currentState?.validate() ?? false) {
-      print('Logging in with ${_emailCtrl.text}');
+      _controller.doLogin(
+        email: _emailController.text.trim(),
+        password: _passController.text,
+      );
     }
   }
 
@@ -91,18 +95,18 @@ class _LoginScreenState extends State<LoginScreen> {
             parent: AlwaysScrollableScrollPhysics(),
           ),
           children: [
-            const SizedBox(height: 36),
+            const SizedBox(height: 80),
 
             Text(
-              'Spend Smarter\nSave More',
-              style: AppTextStyle.balance.copyWith(fontSize: 34),
+              'Welcome Back!',
+              style: AppTextStyle.balance,
               textAlign: TextAlign.center,
             ),
 
             Image.asset('assets/images/login_image.png'),
 
             CustomTextField(
-              controller: _emailCtrl,
+              controller: _emailController,
               labelText: 'Your Email',
               padding: _fieldPadding,
               labelTextHint: 'john.doe@example.com',
@@ -117,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
 
             CustomTextField(
-              controller: _passCtrl,
+              controller: _passController,
               labelText: 'Your Password',
               labelTextHint: 'Enter your password',
               padding: _fieldPadding,
@@ -160,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: 'Sign Up',
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          context.pushNamed(RouteNames.signup);
+                          context.pushReplacementNamed(NamedRoutes.signup);
                         },
                       style: AppTextStyle.buttonSecondary.copyWith(
                         fontWeight: FontWeight.w700,

@@ -2,14 +2,17 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wealth_wave/config/routes/route_names.dart';
-import 'package:wealth_wave/core/common/functions/custom_modal_bottom_sheet.dart';
+import 'package:wealth_wave/core/common/widget/custom_modal_bottom_sheet.dart';
 import 'package:wealth_wave/core/common/widget/custom_circular_progress_indicator.dart';
 import 'package:wealth_wave/core/common/widget/primary_button.dart';
 import 'package:wealth_wave/core/common/widget/custom_text_field.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 import 'package:wealth_wave/core/util/constants/app_text_style.dart';
-import 'package:wealth_wave/features/auth/presentation/bloc/create_account_state.dart';
-import 'package:wealth_wave/features/auth/presentation/controller/create_account_controller.dart';
+import 'package:wealth_wave/core/util/mock/mock_auth_service.dart';
+import 'package:wealth_wave/di/locator.dart';
+import 'package:wealth_wave/features/auth/data/models/user_model.dart';
+import 'package:wealth_wave/features/auth/presentation/bloc/authentication_state.dart';
+import 'package:wealth_wave/features/auth/presentation/controller/authentication_controller.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -20,11 +23,11 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameCtrl = TextEditingController();
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-  final _confirmPassCtrl = TextEditingController();
-  final _controller = AuthenticationController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passController = TextEditingController();
+  final _confirmPassController = TextEditingController();
+  final _controller = locator.get<AuthenticationController>();
 
   static const _fieldPadding = EdgeInsets.symmetric(
     horizontal: 24,
@@ -33,10 +36,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   @override
   void dispose() {
-    _nameCtrl.dispose();
-    _emailCtrl.dispose();
-    _passCtrl.dispose();
-    _confirmPassCtrl.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _passController.dispose();
+    _confirmPassController.dispose();
     super.dispose();
   }
 
@@ -80,7 +83,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   void _onCreateAccount() {
     if (_formKey.currentState?.validate() ?? false) {
-      _controller.doCreateAccount();
+      _controller.doCreateAccount(
+        userModel: UserModel(
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passController.text,
+        ),
+      );
     }
   }
 
@@ -108,7 +117,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             SizedBox(height: 16),
 
             CustomTextField(
-              controller: _nameCtrl,
+              controller: _nameController,
               labelText: 'Your Name',
               padding: _fieldPadding,
               labelTextHint: 'John Doe',
@@ -126,7 +135,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             ),
 
             CustomTextField(
-              controller: _emailCtrl,
+              controller: _emailController,
               labelText: 'Your Email',
               padding: _fieldPadding,
               labelTextHint: 'john.doe@example.com',
@@ -141,7 +150,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             ),
 
             CustomTextField(
-              controller: _passCtrl,
+              controller: _passController,
               labelText: 'Choose your Password',
               padding: _fieldPadding,
               labelTextHint: 'Choose a strong password',
@@ -163,7 +172,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             ),
 
             CustomTextField(
-              controller: _confirmPassCtrl,
+              controller: _confirmPassController,
               labelText: 'Confirm your Password',
               padding: _fieldPadding,
               labelTextHint: 'Re-enter your password',
@@ -171,9 +180,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               textInputAction: TextInputAction.done,
               inputType: InputType.password,
               validator: (v) =>
-                  v != _passCtrl.text ? 'Passwords do not match' : null,
+                  v != _passController.text ? 'Passwords do not match' : null,
               helperText: 'Passwords must match.',
-              helperTextCondition: (v) => v != _passCtrl.text,
+              helperTextCondition: (v) => v != _passController.text,
             ),
 
             const SizedBox(height: 12),
@@ -203,7 +212,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       text: 'Sign In',
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          context.pushNamed(RouteNames.login);
+                          context.pushReplacementNamed(NamedRoutes.login);
                         },
                       style: AppTextStyle.buttonSecondary.copyWith(
                         fontWeight: FontWeight.w700,

@@ -53,7 +53,7 @@ class _BottomContent extends StatelessWidget {
         primaryButton(
           'Get Started',
           () {
-            context.pushNamed(RouteNames.signup);
+            context.goNamed(NamedRoutes.signup);
           },
           AppColors.vibrantTeal,
           AppColors.textPrimary,
@@ -85,7 +85,7 @@ class _BottomContent extends StatelessWidget {
             TextSpan(
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  context.pushNamed(RouteNames.login);
+                  context.goNamed(NamedRoutes.login);
                 },
               text: 'Sign In',
               style: AppTextStyle.buttonSecondary.copyWith(
