@@ -83,11 +83,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   void _onCreateAccount() {
     if (_formKey.currentState?.validate() ?? false) {
       _controller.doCreateAccount(
-        userModel: UserModel(
-          name: _nameController.text.trim(),
-          email: _emailController.text.trim(),
-          password: _passController.text,
-        ),
+        _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passController.text,
       );
     }
   }

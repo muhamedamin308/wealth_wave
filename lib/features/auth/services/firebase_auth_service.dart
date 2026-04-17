@@ -7,19 +7,26 @@ class FirebaseAuthService implements AuthService {
   final _auth = FirebaseAuth.instance;
 
   @override
-  Future<UserModel?> signIn({required String email, required String password}) {
-    return _auth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .then(
-          (result) =>
-              result.user != null ? result.toUserModel() : throw Exception(),
-        )
-        .catchError((e) => throw Exception('Failed to log in: $e'));
+  Future<UserModel?> signIn({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = result.user;
+      if (user == null) throw Exception('Sign-in failed: user is null');
+      return user.toUserModel();
+    } catch (e) {
+      throw Exception('Failed to log in: $e');
+    }
   }
 
   @override
-  Future<void> signOut() {
-    return _auth.signOut();
+  Future<void> signOut() async {
+    await _auth.signOut();
   }
 
   @override
@@ -28,14 +35,25 @@ class FirebaseAuthService implements AuthService {
     required String email,
     required String password,
   }) async {
-    return _auth
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .then(
-          (result) =>
-              result.user != null ? result.toUserModel() : throw Exception(),
-        )
-        .catchError(
-          (error) => throw Exception('Failed to create account: $error'),
-        );
+    try {
+      final result = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = result.user;
+      if (user == null) {
+        throw Exception('Account creation failed: user is null');
+      }
+
+      // Update display name (Firebase Auth)
+      await user.updateDisplayName(name);
+      // Force refresh to get updated displayName
+      await user.reload();
+      final updatedUser = _auth.currentUser!;
+
+      return updatedUser.toUserModel();
+    } catch (e) {
+      throw Exception('Failed to create account: $e');
+    }
   }
 }
