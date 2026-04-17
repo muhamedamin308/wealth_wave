@@ -22,7 +22,7 @@ Widget primaryButton(
             ? backgroundColor
             : AppColors.shadow, // disabled state color
         foregroundColor: foregroundColor,
-        padding: const EdgeInsets.symmetric(vertical: 24),
+        padding: EdgeInsets.all(16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius),
         ),

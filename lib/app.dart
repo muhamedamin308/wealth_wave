@@ -29,12 +29,12 @@ class App extends StatelessWidget {
   final GoRouter _router = GoRouter(
     routes: [
       GoRoute(
-        name: RouteNames.splash,
+        name: NamedRoutes.splash,
         path: "/",
         builder: ((context, state) => const SplashScreen()),
       ),
       GoRoute(
-        name: RouteNames.onboarding,
+        name: NamedRoutes.onboarding,
         path: "/onboarding",
         pageBuilder: (context, state) {
           return CustomTransitionPage(
@@ -53,7 +53,7 @@ class App extends StatelessWidget {
         },
       ),
       GoRoute(
-        name: RouteNames.signup,
+        name: NamedRoutes.signup,
         path: "/signup",
         pageBuilder: (context, state) {
           return CustomTransitionPage(
@@ -72,7 +72,7 @@ class App extends StatelessWidget {
         },
       ),
       GoRoute(
-        name: RouteNames.login,
+        name: NamedRoutes.login,
         path: "/login",
         pageBuilder: (context, state) {
           return CustomTransitionPage(

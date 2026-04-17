@@ -16,6 +16,8 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction,
     this.inputType = InputType.text,
+    this.helperText,
+    this.helperTextCondition,
   });
 
   final String labelText;
@@ -27,6 +29,8 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextInputAction? textInputAction;
   final InputType inputType;
+  final String? helperText;
+  final bool? Function(String)? helperTextCondition;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -36,6 +40,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   late final FocusNode _focusNode;
   bool _isFocused = false;
   bool _isObscured = true;
+  String? _helperText;
 
   bool get _isPasswordField => widget.inputType == InputType.password;
 
@@ -43,6 +48,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   void initState() {
     super.initState();
     _focusNode = FocusNode()..addListener(_onFocusChanged);
+    _helperText = widget.helperText;
   }
 
   @override
@@ -67,6 +73,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Padding(
       padding: widget.padding,
       child: TextFormField(
+        onChanged: (value) {
+          // ignore: unrelated_type_equality_checks
+          if (widget.helperTextCondition?.call(value) == true) {
+            setState(() {
+              _helperText = widget.helperText;
+            });
+          } else {
+            setState(() => _helperText = null);
+          }
+        },
         controller: widget.controller,
         focusNode: _focusNode,
         validator: widget.validator,
@@ -76,6 +92,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
         obscureText: _isPasswordField && _isObscured,
         style: AppTextStyle.formValue,
         decoration: InputDecoration(
+          helperText: _helperText,
+          helperMaxLines: 3,
+          helperStyle: AppTextStyle.formHint.copyWith(color: AppColors.warning),
           labelText: widget.labelText.toUpperCase(),
           hintText: widget.labelTextHint,
           labelStyle: AppTextStyle.formLabel.copyWith(

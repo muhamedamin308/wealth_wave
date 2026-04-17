@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -55,10 +53,11 @@ class _BottomContent extends StatelessWidget {
         primaryButton(
           'Get Started',
           () {
-            context.pushNamed(RouteNames.signup);
+            context.goNamed(NamedRoutes.signup);
           },
           AppColors.vibrantTeal,
           AppColors.textPrimary,
+          radius: 24.0,
         ),
         const SizedBox(height: 24),
         _buildSignInLink(context),
@@ -86,7 +85,7 @@ class _BottomContent extends StatelessWidget {
             TextSpan(
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  context.pushNamed(RouteNames.login);
+                  context.goNamed(NamedRoutes.login);
                 },
               text: 'Sign In',
               style: AppTextStyle.buttonSecondary.copyWith(

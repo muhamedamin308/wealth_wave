@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wealth_wave/config/routes/route_names.dart';
+import 'package:wealth_wave/core/common/widget/custom_circular_progress_indicator.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // 1. Set a delay (e.g., 3 seconds)
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        context.goNamed(RouteNames.onboarding);
+        context.goNamed(NamedRoutes.onboarding);
       }
     });
   }
@@ -76,6 +77,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: AppColors.textPrimary.withValues(alpha: 0.9),
                   letterSpacing: 0.8,
                 ),
+              ),
+              const SizedBox(height: 16),
+              CustomCircularProgressIndicator(
+                progressColor: AppColors.textPrimary.withValues(alpha: 0.8),
               ),
             ],
           ),
