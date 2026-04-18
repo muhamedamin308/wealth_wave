@@ -3,18 +3,20 @@ import 'package:wealth_wave/core/common/widget/primary_button.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 import 'package:wealth_wave/core/util/constants/app_text_style.dart';
 
-class CustomErrorBottomSheet extends StatelessWidget {
+class CustomMessageBottomSheet extends StatelessWidget {
   final String title;
   final String message;
+  final String messageOnButton;
   final VoidCallback onClose;
   final bool isError;
 
-  const CustomErrorBottomSheet({
+  const CustomMessageBottomSheet({
     super.key,
     required this.title,
     required this.message,
     required this.onClose,
     required this.isError,
+    required this.messageOnButton,
   });
 
   /// Shows the error bottom sheet and returns a Future<void>.
@@ -24,6 +26,7 @@ class CustomErrorBottomSheet extends StatelessWidget {
     required String message,
     VoidCallback? onClose,
     required bool isError,
+    required String messageOnButton,
   }) {
     return showModalBottomSheet<void>(
       context: context,
@@ -35,11 +38,12 @@ class CustomErrorBottomSheet extends StatelessWidget {
           topRight: Radius.circular(40),
         ),
       ),
-      builder: (BuildContext context) => CustomErrorBottomSheet(
+      builder: (BuildContext context) => CustomMessageBottomSheet(
         title: title,
         message: message,
         onClose: onClose ?? () {},
         isError: isError,
+        messageOnButton: messageOnButton,
       ),
     );
   }
@@ -95,7 +99,7 @@ class CustomErrorBottomSheet extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: primaryButton(
-                'Close',
+                messageOnButton,
                 () {
                   Navigator.of(context).pop();
                   onClose(); // Call the optional callback after closing

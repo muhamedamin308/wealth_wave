@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wealth_wave/config/routes/route_names.dart';
+import 'package:wealth_wave/config/routes/named_routes.dart';
 import 'package:wealth_wave/core/common/widget/custom_circular_progress_indicator.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
 import 'package:wealth_wave/di/locator.dart';
@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _splashController.isUserLoggedIn();
     _splashController.addListener(() {
       if (_splashController.state is SplashSuccessState) {
-        // Navigate to the main app screen (e.g., dashboard)
+        context.goNamed(NamedRoutes.home);
       } else {
         context.goNamed(NamedRoutes.onboarding);
       }

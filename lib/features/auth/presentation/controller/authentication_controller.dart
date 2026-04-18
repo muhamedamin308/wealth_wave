@@ -17,6 +17,20 @@ class AuthenticationController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> doLogout() async {
+    final secureStorage = SecureStorage();
+    changeState(AuthenticationLoadingState());
+    try {
+      await _authService.signOut();
+      await secureStorage.delete(key: SecureStorageKeys.currentUserId);
+      changeState(AuthenticationSuccessState());
+      return true;
+    } catch (e) {
+      changeState(AuthenticationErrorState(e.toString()));
+      return false;
+    }
+  }
+
   Future<bool> doCreateAccount(
     String name, {
     required String email,
@@ -50,10 +64,15 @@ class AuthenticationController extends ChangeNotifier {
     required String email,
     required String password,
   }) async {
+    final secureStorage = SecureStorage();
     changeState(AuthenticationLoadingState());
     try {
       final user = await _authService.signIn(email: email, password: password);
       if (user != null) {
+        secureStorage.write(
+          key: SecureStorageKeys.currentUserId,
+          value: user.toJson(),
+        );
         changeState(AuthenticationSuccessState());
         return true;
       } else {
