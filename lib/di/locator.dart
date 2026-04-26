@@ -11,7 +11,10 @@ void setupLocator() {
   locator.registerLazySingleton<AuthService>(() => FirebaseAuthService());
 
   locator.registerFactory<AuthenticationController>(
-    () => AuthenticationController(locator.get<AuthService>()),
+    () => AuthenticationController(
+      locator.get<AuthService>(),
+      const SecureStorage(),
+    ),
   );
 
   locator.registerFactory<SplashController>(

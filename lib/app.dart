@@ -15,7 +15,6 @@ class App extends StatelessWidget {
 
   // Centralized transition configuration
   static const _transitionDuration = Duration(milliseconds: 300);
-  static const _defaultTransitionCurve = Curves.easeInOut;
 
   @override
   Widget build(BuildContext context) {

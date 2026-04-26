@@ -6,8 +6,9 @@ import 'package:wealth_wave/services/auth_service.dart';
 
 class AuthenticationController extends ChangeNotifier {
   final AuthService _authService;
+  final SecureStorage _secureStorage;
 
-  AuthenticationController(this._authService);
+  AuthenticationController(this._authService, this._secureStorage);
   AuthenticationState _state = AuthenticationInitialState();
 
   AuthenticationState get state => _state;
@@ -36,7 +37,6 @@ class AuthenticationController extends ChangeNotifier {
     required String email,
     required String password,
   }) async {
-    final secureStorage = SecureStorage();
     changeState(AuthenticationLoadingState());
     try {
       final user = await _authService.signUp(
@@ -45,7 +45,7 @@ class AuthenticationController extends ChangeNotifier {
         password: password,
       );
       if (user != null) {
-        secureStorage.write(
+        _secureStorage.write(
           key: SecureStorageKeys.currentUserId,
           value: user.toJson(),
         );
@@ -64,12 +64,11 @@ class AuthenticationController extends ChangeNotifier {
     required String email,
     required String password,
   }) async {
-    final secureStorage = SecureStorage();
     changeState(AuthenticationLoadingState());
     try {
       final user = await _authService.signIn(email: email, password: password);
       if (user != null) {
-        secureStorage.write(
+        _secureStorage.write(
           key: SecureStorageKeys.currentUserId,
           value: user.toJson(),
         );
