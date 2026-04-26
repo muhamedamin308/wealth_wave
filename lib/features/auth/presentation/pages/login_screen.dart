@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wealth_wave/config/routes/route_names.dart';
+import 'package:wealth_wave/config/routes/named_routes.dart';
 import 'package:wealth_wave/core/common/widget/custom_modal_bottom_sheet.dart';
 import 'package:wealth_wave/core/common/widget/custom_circular_progress_indicator.dart';
 import 'package:wealth_wave/core/common/widget/primary_button.dart';
@@ -53,22 +53,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
         case AuthenticationSuccessState():
           Navigator.of(context).pop(); // Close loading dialog
-          CustomErrorBottomSheet.show(
+          CustomMessageBottomSheet.show(
             context,
             title: 'Account Creation Success',
             message:
                 'Your account has been created successfully! You can now log in with your credentials.',
             isError: false,
+            onClose: () {
+              context.pushReplacementNamed(NamedRoutes.home);
+            },
+            messageOnButton: 'Go to Home Screen'
           );
           break;
 
         case AuthenticationErrorState():
           Navigator.of(context).pop(); // Close loading dialog
-          CustomErrorBottomSheet.show(
+          CustomMessageBottomSheet.show(
             context,
             title: 'Account Creation Failed',
             message: (_controller.state as AuthenticationErrorState).message,
             isError: true,
+            messageOnButton: 'Close'
           );
           break;
       }

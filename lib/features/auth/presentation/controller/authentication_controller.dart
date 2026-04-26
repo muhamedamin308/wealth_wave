@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
-import 'package:wealth_wave/features/auth/data/models/user_model.dart';
+import 'package:wealth_wave/core/util/constants/secure_storage_keys.dart';
+import 'package:wealth_wave/features/auth/data/data_source/secure_storage.dart';
 import 'package:wealth_wave/features/auth/presentation/bloc/authentication_state.dart';
 import 'package:wealth_wave/services/auth_service.dart';
 
 class AuthenticationController extends ChangeNotifier {
   final AuthService _authService;
+  final SecureStorage _secureStorage;
 
-  AuthenticationController(this._authService);
+  AuthenticationController(this._authService, this._secureStorage);
   AuthenticationState _state = AuthenticationInitialState();
 
   AuthenticationState get state => _state;
@@ -16,20 +18,41 @@ class AuthenticationController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> doCreateAccount({required UserModel userModel}) async {
+  Future<bool> doLogout() async {
+    final secureStorage = SecureStorage();
+    changeState(AuthenticationLoadingState());
+    try {
+      await _authService.signOut();
+      await secureStorage.delete(key: SecureStorageKeys.currentUserId);
+      changeState(AuthenticationSuccessState());
+      return true;
+    } catch (e) {
+      changeState(AuthenticationErrorState(e.toString()));
+      return false;
+    }
+  }
+
+  Future<bool> doCreateAccount(
+    String name, {
+    required String email,
+    required String password,
+  }) async {
     changeState(AuthenticationLoadingState());
     try {
       final user = await _authService.signUp(
-        userModel.name!,
-        email: userModel.email!,
-        password: userModel.password!,
+        name,
+        email: email,
+        password: password,
       );
       if (user != null) {
+        _secureStorage.write(
+          key: SecureStorageKeys.currentUserId,
+          value: user.toJson(),
+        );
         changeState(AuthenticationSuccessState());
         return true;
       } else {
-        changeState(AuthenticationErrorState('Failed to create account'));
-        return false;
+        throw Exception('Failed to create account');
       }
     } catch (e) {
       changeState(AuthenticationErrorState(e.toString()));
@@ -45,6 +68,10 @@ class AuthenticationController extends ChangeNotifier {
     try {
       final user = await _authService.signIn(email: email, password: password);
       if (user != null) {
+        _secureStorage.write(
+          key: SecureStorageKeys.currentUserId,
+          value: user.toJson(),
+        );
         changeState(AuthenticationSuccessState());
         return true;
       } else {

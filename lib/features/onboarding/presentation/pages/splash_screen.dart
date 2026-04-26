@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wealth_wave/config/routes/route_names.dart';
+import 'package:wealth_wave/config/routes/named_routes.dart';
 import 'package:wealth_wave/core/common/widget/custom_circular_progress_indicator.dart';
 import 'package:wealth_wave/core/util/constants/app_colors.dart';
+import 'package:wealth_wave/di/locator.dart';
+import 'package:wealth_wave/features/onboarding/presentation/bloc/splash_state.dart';
+import 'package:wealth_wave/features/onboarding/presentation/controller/splash_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,16 +15,15 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final SplashController _splashController = locator.get<SplashController>();
   @override
   void initState() {
     super.initState();
-    _navigateToNextScreen();
-  }
-
-  void _navigateToNextScreen() {
-    // 1. Set a delay (e.g., 3 seconds)
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
+    _splashController.isUserLoggedIn();
+    _splashController.addListener(() {
+      if (_splashController.state is SplashSuccessState) {
+        context.goNamed(NamedRoutes.home);
+      } else {
         context.goNamed(NamedRoutes.onboarding);
       }
     });
